@@ -4,18 +4,24 @@
     </head>
     <body>
         <h1>Maxis super geniales Spiel</h1>
-        <h2 id="hallo">Hallo Du</h2>
-        <p class="beschreibung">Töte deine anderen Mitspieler um Qubes zu bekommen</p>
-        <button id="maxiknopf">Spielen</button>
-
+        <p class="beschreibung">Hier kannst du dein Glück mit Schere, Stein, Papier probieren. Viel Spass!</p>
         <h2>Du wählst: <span id="maxi-wahl"></span></h2>
         <h2>Computer wählt: <span id="computer-wahl"></span></h2>
         <h2>Ergebnis: <span id="result"></span></h2>
-
+        <div >
+                <div class="score">Computer: <span id="score-computer">0</span></div>
+                <div class="score">Spieler: <span id="score-user">0</span></div>
+        </div>
         <br>
         <button class="choice" id="schere">Schere</button>
         <button class="choice" id="stein">Stein</button>
         <button class="choice" id="papier">Papier</button>
+
+        <br>
+        <br>
+        <br>
+        <button id="maxiknopf">Neustarten</button>
+
         <script src="script.js"></script>
     </body>
 </html>
