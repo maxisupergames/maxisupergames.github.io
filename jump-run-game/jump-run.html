@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumping Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #c8e6ff;
+        }
+        canvas {
+            border: 2px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="1540" height="770"></canvas>
+    <button id="restartButton" style="position: absolute; top: 10px; right: 10px;" onclick="restartGame()">Neu</button>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const WIDTH = canvas.width;
+        const HEIGHT = canvas.height;
+        const PLAYER_WIDTH = 30;
+        const PLAYER_HEIGHT = 30;
+        const PLAYER_JUMP_SPEED = -15;
+        const PLAYER_JUMP_HORIZONTAL_SPEED = 3;
+        const PLAYER_GRAVITY = 1;
+        const PLAYER_MOVE_SPEED = 10;
+        const BG_COLOR = '#c8e6ff';
+        const LAVA_COLOR = '#ff0000';
+        const GROUND_COLOR = '#8b4513';
+
+        let playerX = 50;
+        let playerY = 250;
+        let isJumping = false;
+        let jumpCounter = 0;
+        let isOnGround = false;
+        let collectedCoins = 0;
+
+        const coins = [];
+
+        function generateCoins() {
+            for (let i = 0; i < 10; i++) {
+                let coinX;
+                let coinY;
+
+                do {
+                    coinX = Math.random() * (WIDTH - 40) + 20; // Random x position within canvas width
+                    coinY = HEIGHT - 140; // Fixed y position 80 pixels above ground
+                } while ((coinX >= 500 && coinX <= 700) || (coinX >= 800 && coinX <= 900)); // Ensure coins are not over lava
+                
+                coins.push({ x: coinX, y: coinY });
+            }
+        }
+
+        function drawPlayer() {
+            ctx.fillStyle = '#0000ff';
+            ctx.fillRect(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT);
+        }
+
+        function drawLava() {
+            ctx.fillStyle = LAVA_COLOR;
+            ctx.fillRect(500, HEIGHT - 61, 200, 61);
+            ctx.fillRect(800, HEIGHT - 61, 100, 61);
+        }
+
+        function drawGround() {
+            ctx.fillStyle = GROUND_COLOR;
+            ctx.fillRect(0, HEIGHT - 60, WIDTH, 60);
+        }
+
+        function drawCoins() {
+            ctx.fillStyle = '#ffd700'; // gold color
+            coins.forEach(coin => {
+                ctx.fillRect(coin.x, coin.y, 10, 10);
+            });
+        }
+
+        function drawText() {
+            ctx.fillStyle = '#000';
+            ctx.font = '24px Arial';
+            ctx.fillText(`Münzen: ${collectedCoins}`, 10, 30); // Text innerhalb des Canvas-Elements
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+            ctx.fillStyle = BG_COLOR;
+            ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+            drawGround();
+            drawPlayer();
+            drawLava();
+            drawCoins();
+            drawText(); // Text wird innerhalb des Canvas-Elements gezeichnet
+        }
+
+        function gameLoop() {
+            update();
+            checkCollision();
+            checkCoinCollision();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function resetGame() {
+            playerX = 50;
+            playerY = 250;
+            collectedCoins = 0;
+            coins.length = 0;
+            generateCoins();
+        }
+
+        function restartGame() {
+            if (confirm("Möchten Sie das Spiel wirklich neu starten?")) {
+                resetGame();
+            }
+        }
+
+        document.addEventListener('keydown', (event) => {
+            const key = event.key;
+
+            if ((key === ' ' || key === 'ArrowUp') && isOnGround) {
+                isJumping = true;
+                jumpCounter = 15;
+                isOnGround = false;
+            }
+            if (key === 'ArrowDown') {
+                playerY += PLAYER_MOVE_SPEED;
+            }
+            if (key === 'ArrowLeft') {
+                playerX -= PLAYER_MOVE_SPEED;
+            }
+            if (key === 'ArrowRight') {
+                playerX += PLAYER_MOVE_SPEED;
+            }
+        });
+
+        function update() {
+            if (!isOnGround) {
+                playerY += PLAYER_GRAVITY;
+            }
+            if (playerY + PLAYER_HEIGHT >= HEIGHT - 60) {
+                isOnGround = true;
+                playerY = HEIGHT - 60 - PLAYER_HEIGHT;
+            } else {
+                isOnGround = false;
+            }
+
+            if (isJumping) {
+                playerY += PLAYER_JUMP_SPEED;
+                playerX += PLAYER_JUMP_HORIZONTAL_SPEED;
+                jumpCounter--;
+                if (jumpCounter === 0) {
+                    isJumping = false;
+                }
+            }
+        }
+
+        function checkCollision() {
+            if (playerY + PLAYER_HEIGHT >= HEIGHT - 61 && (playerX >= 500 && playerX <= 700 || playerX >= 800 && playerX <= 900)) {
+                resetGame();
+            }
+        }
+
+        function checkCoinCollision() {
+            for (let i = 0; i < coins.length; i++) {
+                const coin = coins[i];
+                if (playerX < coin.x + 10 &&
+                    playerX + PLAYER_WIDTH > coin.x &&
+                    playerY < coin.y + 10 &&
+                    playerY + PLAYER_HEIGHT > coin.y) {
+                    coins.splice(i, 1);
+                    collectedCoins++;
+                }
+            }
+        }
+
+        generateCoins();
+        gameLoop();
+    </script>
+</body>
+</html>

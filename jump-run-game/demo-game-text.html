@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maxis Jumping Game</title>
+</head>
+<body>
+<div>
+  <h1>Dies ist eine Demo Version Meines Spieles das ich gerade  entwickle </h1>
+  <p>Die Demo-Version hat nicht alle Funktionen Zun beispiel Keine Music keine weiteren Levels und keine Weiteren Münzen. Möchten Sie sie trotzdem nutzen?</p>
+  <button onclick="spielen()">Ja, spielen</button>
+  <button onclick="abbrechen()">Nein, abbrechen</button>
+</div>
+
+<script>
+function spielen() {
+  // Weiterleitung zur gewünschten Webseite
+  window.location.href = '/jump-run.html'; // Hier die gewünschte URL einfügen
+}
+
+function abbrechen() {
+  var bestätigung = confirm("Möchten Sie die Seite wirklich schließen bei der Demo Version Können sie die Software die Bald erscheint Testen ?");
+  if (bestätigung) {
+    // Wenn der Benutzer die Bestätigung mit "OK" schließt, wird die Seite geschlossen
+    window.close();
+  }
+}
+</script>
+</body>
+</html>
