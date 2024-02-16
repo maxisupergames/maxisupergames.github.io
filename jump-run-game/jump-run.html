@@ -125,24 +125,38 @@
             }
         }
 
-        document.addEventListener('keydown', (event) => {
+        function handleKeyDown(event) {
             const key = event.key;
-
             if ((key === ' ' || key === 'ArrowUp') && isOnGround) {
                 isJumping = true;
                 jumpCounter = 15;
                 isOnGround = false;
             }
             if (key === 'ArrowDown') {
-                playerY += PLAYER_MOVE_SPEED;
+                playerY = Math.min(playerY + PLAYER_MOVE_SPEED, HEIGHT - PLAYER_HEIGHT);
             }
             if (key === 'ArrowLeft') {
-                playerX -= PLAYER_MOVE_SPEED;
+                playerX = Math.max(playerX - PLAYER_MOVE_SPEED, 0);
             }
             if (key === 'ArrowRight') {
-                playerX += PLAYER_MOVE_SPEED;
+                playerX = Math.min(playerX + PLAYER_MOVE_SPEED, WIDTH - PLAYER_WIDTH);
             }
-        });
+        }
+
+        function handleTouchStart() {
+            if (isOnGround) {
+                isJumping = true;
+                jumpCounter = 15;
+                isOnGround = false;
+            }
+        }
+
+        function handleTouchMove(event) {
+            const touchX = event.touches[0].clientX;
+            const canvasRect = canvas.getBoundingClientRect();
+            const canvasX = touchX - canvasRect.left;
+            playerX = Math.max(Math.min(canvasX, WIDTH - PLAYER_WIDTH), 0);
+        }
 
         function update() {
             if (!isOnGround) {
@@ -186,6 +200,14 @@
 
         generateCoins();
         gameLoop();
+
+        // Event listeners based on device type
+        if ('ontouchstart' in window) {
+            canvas.addEventListener('touchstart', handleTouchStart);
+            canvas.addEventListener('touchmove', handleTouchMove);
+        } else {
+            document.addEventListener('keydown', handleKeyDown);
+        }
     </script>
 </body>
 </html>
