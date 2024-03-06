@@ -1,6 +1,8 @@
-.Banana {
-    background-color: #00c4cc;
-    background-image: url('Untitled design (24).png');
-    background-size: cover;
-    background-position: center;
+div {
+    background-color: #00c4cc; /* Hintergrundfarbe festlegen */
+    color: white; /* Textfarbe festlegen */
+    font-size: 16px; /* Schriftgröße festlegen */
+    font-family: Arial, sans-serif; /* Schriftart festlegen */
+    border-top-left-radius: 5px; /* Runde Ecken oben links */
+    border-bottom-left-radius: 5px; /* Runde Ecken unten links */
 }
